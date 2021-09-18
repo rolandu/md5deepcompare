@@ -31,6 +31,7 @@ def md5_deep_compare(left_file_parsed: [LineOfMD5DeepFile], right_file_parsed: [
     count_lines = 0
     count_hashes = 0
     count_path = 0
+    count_not_found = 0
 
     for left_item in left_file_parsed:
         
@@ -42,21 +43,19 @@ def md5_deep_compare(left_file_parsed: [LineOfMD5DeepFile], right_file_parsed: [
             if left_item.file_line == right_item.file_line:
                 print("identical line: " + left_item.file_path)
                 found_line = True
+                count_lines += 1
             elif left_item.file_hash == right_item.file_hash:
                 print("identical hash: " + left_item.file_path + " + " + right_item.file_path)
                 found_hash = True
+                count_hashes += 1
             elif left_item.file_path == right_item.file_path:
                 print("identical path: " + left_item.file_path + " + " + right_item.file_path)
                 found_path = True
-
-        if found_line:
-            count_lines += 1
-
-        if found_hash:
-            count_hashes += 1
+                count_path += 1
             
-        if found_path:
-            count_path += 1
+        if not found_path and not found_hash and not found_line:
+            print("missing line: " + left_item.file_path)
+            count_not_found += 1
 
     print()
     print("Left file lines:  %s" % (str(len(left_file_parsed))))
@@ -65,6 +64,7 @@ def md5_deep_compare(left_file_parsed: [LineOfMD5DeepFile], right_file_parsed: [
     print("Left file lines found in right file: %s" % (str(count_lines)))
     print("Left file hashes found in right file (but different name): %s" % (str(count_hashes)))
     print("Left file names found in right file (but different hash):  %s" % (str(count_path)))
+    print("Left files not found in right file (neither path nor hash): %s" % (str(count_not_found)))
 
 
 if __name__ == '__main__':
